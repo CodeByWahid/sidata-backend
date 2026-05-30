@@ -1,0 +1,1068 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIDATA — Sistem Data Mahasiswa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'DM Sans', sans-serif;
+        background: #f0f2ff;
+        color: #1e1b4b;
+        min-height: 100vh;
+      }
+
+      /* ═══════════════════════════════
+         AUTH PAGE
+      ═══════════════════════════════ */
+      #auth-section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: linear-gradient(145deg, #6366f1 0%, #4338ca 40%, #3730a3 100%);
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* dekoratif lingkaran blur di bg */
+      #auth-section::before {
+        content: '';
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 50%;
+        top: -200px;
+        right: -150px;
+        pointer-events: none;
+      }
+      #auth-section::after {
+        content: '';
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        bottom: -150px;
+        left: -100px;
+        pointer-events: none;
+      }
+
+      .auth-card {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 28px;
+        padding: 48px 40px 36px;
+        width: 100%;
+        max-width: 440px;
+        position: relative;
+        z-index: 1;
+        box-shadow:
+          0 8px 32px rgba(0, 0, 0, 0.2),
+          0 1px 0 rgba(255, 255, 255, 0.3) inset;
+      }
+
+      /* Logo area */
+      .auth-logo-wrap {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .auth-logo-text {
+        font-family: 'Syne', sans-serif;
+        font-size: 2.6rem;
+        font-weight: 900;
+        color: #ffffff;
+        letter-spacing: 5px;
+        line-height: 1;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .auth-logo-sub {
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        color: rgba(255, 255, 255, 0.65);
+        margin-top: 8px;
+        text-transform: uppercase;
+      }
+
+      /* Heading form */
+      .auth-heading {
+        text-align: center;
+        margin-bottom: 28px;
+      }
+
+      .auth-heading h2 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.55rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 6px;
+      }
+
+      .auth-heading p {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.65);
+        line-height: 1.5;
+      }
+
+      /* Alert */
+      #auth-alert {
+        border-radius: 10px;
+        font-size: 0.875rem;
+        margin-bottom: 12px;
+        display: none;
+        padding: 12px 14px;
+      }
+      #auth-alert.error {
+        background: rgba(248, 113, 113, 0.2);
+        border: 1px solid rgba(248, 113, 113, 0.4);
+        color: #fecaca;
+        display: block;
+      }
+      #auth-alert.success {
+        background: rgba(74, 222, 128, 0.2);
+        border: 1px solid rgba(74, 222, 128, 0.4);
+        color: #bbf7d0;
+        display: block;
+      }
+
+      /* Field */
+      .auth-field {
+        margin-bottom: 14px;
+      }
+
+      .auth-field label {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 8px;
+      }
+
+      .input-wrap {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.5);
+        display: flex;
+        align-items: center;
+        pointer-events: none;
+        font-style: normal;
+      }
+
+      .auth-field input {
+        width: 100%;
+        padding: 15px 18px 15px 46px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        border-radius: 14px;
+        color: #ffffff;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.95rem;
+        outline: none;
+        transition: all 0.2s;
+      }
+
+      .auth-field input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .auth-field input:focus {
+        border-color: rgba(255, 255, 255, 0.6);
+        background: rgba(255, 255, 255, 0.18);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+      }
+
+      /* Tombol utama */
+      .auth-btn-primary {
+        width: 100%;
+        margin-top: 20px;
+        padding: 16px;
+        background: #ffffff;
+        border: none;
+        border-radius: 14px;
+        color: #4338ca;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s;
+        text-transform: uppercase;
+      }
+
+      .auth-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        background: #f8f9ff;
+      }
+
+      .auth-btn-primary:active {
+        transform: scale(0.98);
+      }
+      .auth-btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Switch link */
+      .auth-switch {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .auth-switch span {
+        color: #ffffff;
+        font-weight: 700;
+        cursor: pointer;
+        margin-left: 4px;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      /* Footer */
+      .auth-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.4);
+        letter-spacing: 0.3px;
+        text-align: center;
+        line-height: 1.6;
+      }
+
+      /* Titik merah dekoratif */
+      .auth-dot {
+        position: absolute;
+        bottom: 32px;
+        right: 32px;
+        width: 10px;
+        height: 10px;
+        background: #f87171;
+        border-radius: 50%;
+        box-shadow: 0 0 12px rgba(248, 113, 113, 0.6);
+      }
+
+      /* ═══════════════════════════════
+         HEADER / NAVBAR
+      ═══════════════════════════════ */
+      header {
+        display: none;
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0 32px;
+        height: 64px;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 1px 12px rgba(99, 102, 241, 0.07);
+      }
+
+      body:has(#dashboard-section[style*='block']) header {
+        display: flex;
+      }
+
+      .logo {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 900;
+        letter-spacing: 3px;
+        background: linear-gradient(135deg, #6366f1, #4338ca);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      #user-info {
+        font-size: 0.82rem;
+        color: #94a3b8;
+      }
+
+      .btn {
+        padding: 8px 18px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        color: #475569;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.84rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s;
+      }
+      .btn:hover {
+        background: #e8edf5;
+      }
+
+      .btn.primary {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: #fff;
+        border: none;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+      }
+      .btn.primary:hover {
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        transform: translateY(-1px);
+      }
+
+      /* ═══════════════════════════════
+         DASHBOARD
+      ═══════════════════════════════ */
+      #dashboard-section {
+        display: none;
+      }
+
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 32px 28px;
+      }
+
+      .card {
+        background: #ffffff;
+        border: 1px solid #e8eaf5;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 4px 24px rgba(99, 102, 241, 0.06);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+      }
+
+      .stat {
+        border-radius: 16px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s;
+      }
+      .stat:hover {
+        transform: translateY(-3px);
+      }
+
+      .stat:nth-child(1) {
+        border-left: 4px solid #6366f1;
+      }
+      .stat:nth-child(2) {
+        border-left: 4px solid #10b981;
+      }
+      .stat:nth-child(3) {
+        border-left: 4px solid #f59e0b;
+      }
+
+      .stat h3 {
+        font-family: 'Syne', sans-serif;
+        font-size: 2.4rem;
+        font-weight: 900;
+      }
+      .stat:nth-child(1) h3 {
+        color: #6366f1;
+      }
+      .stat:nth-child(2) h3 {
+        color: #10b981;
+      }
+      .stat:nth-child(3) h3 {
+        color: #f59e0b;
+      }
+
+      .muted {
+        color: #94a3b8;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 4px;
+      }
+
+      .search {
+        padding: 10px 16px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.875rem;
+        color: #1e1b4b;
+        outline: none;
+        min-width: 240px;
+        transition: all 0.2s;
+        background: #f8f9ff;
+      }
+      .search:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        margin-top: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead th {
+        background: #f8f9ff;
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #94a3b8;
+        border-bottom: 1px solid #e8eaf5;
+      }
+
+      tbody tr {
+        border-bottom: 1px solid #f1f3fb;
+        transition: background 0.15s;
+      }
+      tbody tr:hover {
+        background: rgba(99, 102, 241, 0.03);
+      }
+
+      td {
+        padding: 14px 16px;
+        font-size: 0.9rem;
+        color: #374151;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 8px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        background: rgba(99, 102, 241, 0.1);
+        color: #6366f1;
+        font-family: monospace;
+      }
+
+      .badge.ipk.green {
+        background: rgba(16, 185, 129, 0.12);
+        color: #10b981;
+      }
+      .badge.ipk.yellow {
+        background: rgba(245, 158, 11, 0.12);
+        color: #f59e0b;
+      }
+      .badge.ipk.red {
+        background: rgba(248, 113, 113, 0.12);
+        color: #ef4444;
+      }
+
+      /* Modal */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(6px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 16px;
+      }
+      .modal-backdrop.show {
+        display: flex;
+      }
+
+      .modal {
+        width: 100%;
+        max-width: 500px;
+        border-radius: 20px;
+        animation: modalIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: scale(0.94) translateY(-12px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .field label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: #94a3b8;
+      }
+      .field input {
+        padding: 12px 14px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
+        color: #1e1b4b;
+        background: #f8f9ff;
+        outline: none;
+        transition: all 0.2s;
+      }
+      .field input:focus {
+        border-color: #6366f1;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      /* Spinner */
+      .spinner {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .auth-card {
+          padding: 36px 24px 28px;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        header {
+          padding: 0 16px;
+        }
+        .container {
+          padding: 20px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">SIDATA</div>
+      <div class="nav-right">
+        <div id="user-info" class="muted"></div>
+        <button id="logoutBtn" class="btn">Logout</button>
+      </div>
+    </header>
+
+    <div id="auth-section">
+      <div class="auth-card">
+        <!-- Logo -->
+        <div class="auth-logo-wrap">
+          <div class="auth-logo-text">SIDATA</div>
+          <div class="auth-logo-sub">Sistem Informasi Data Mahasiswa</div>
+        </div>
+
+        <!-- Alert -->
+        <div id="auth-alert"></div>
+
+        <!-- LOGIN FORM -->
+        <div id="login-form">
+          <div class="auth-heading">
+            <h2>Masuk ke SIDATA</h2>
+            <p>Aplikasi manajemen data mahasiswa — demo premium</p>
+          </div>
+
+          <div class="auth-field">
+            <label>Username</label>
+            <div class="input-wrap">
+              <span class="auth-input-icon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #000000; pointer-events: none">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                </svg>
+              </span>
+              <input id="login-username" type="text" placeholder="Masukkan username" style="padding-left: 46px" />
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label>Password</label>
+            <div class="input-wrap">
+              <span class="auth-input-icon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #000000; pointer-events: none">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </span>
+              <input id="login-password" type="password" placeholder="••••••••" style="padding-left: 46px" />
+            </div>
+          </div>
+
+          <button id="btn-login" class="auth-btn-primary" onclick="login()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+              <polyline points="10 17 15 12 10 7" />
+              <line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+            Masuk ke Dashboard
+          </button>
+
+          <div class="auth-switch">
+            Belum punya akun?
+            <span onclick="showRegister()">Daftar sekarang</span>
+          </div>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="register-form" style="display: none">
+          <div class="auth-heading">
+            <h2>Buat Akun SIDATA</h2>
+            <p>Daftarkan akun baru untuk mengakses dashboard</p>
+          </div>
+
+          <div class="auth-field">
+            <label>Username</label>
+            <div class="input-wrap">
+              <span class="auth-input-icon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #000000; pointer-events: none">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                </svg>
+              </span>
+              <input id="reg-username" type="text" placeholder="Buat username" style="padding-left: 46px" />
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label>Password</label>
+            <div class="input-wrap">
+              <span class="auth-input-icon" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #000000; pointer-events: none">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </span>
+              <input id="reg-password" type="password" placeholder="Min. 6 karakter" style="padding-left: 46px" />
+            </div>
+          </div>
+
+          <button id="btn-register" class="auth-btn-primary" onclick="register()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <line x1="19" y1="8" x2="19" y2="14" />
+              <line x1="22" y1="11" x2="16" y2="11" />
+            </svg>
+            Buat Akun
+          </button>
+
+          <div class="auth-switch">
+            Sudah punya akun?
+            <span onclick="showLogin()">Masuk sekarang</span>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="auth-footer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          SIDATA © 2024 &nbsp;·&nbsp; Sistem keamanan berlapis dengan enkripsi JWT
+        </div>
+
+        <div class="auth-dot"></div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard-section">
+      <div class="container">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px">
+            <div>
+              <h2 style="font-family: Syne; font-size: 1.7rem; font-weight: 900; color: #1e1b4b">Data Mahasiswa</h2>
+              <p style="color: #94a3b8; font-size: 0.82rem; margin-top: 2px">Kelola seluruh data mahasiswa terdaftar</p>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+              <input id="searchInput" class="search" placeholder="🔍  Cari nama atau NIM..." />
+              <button id="addBtn" class="btn primary">+ Tambah Mahasiswa</button>
+            </div>
+          </div>
+
+          <div class="stats" style="margin-top: 24px">
+            <div class="card stat">
+              <h3 id="totalCount">—</h3>
+              <p class="muted">Total Mahasiswa</p>
+            </div>
+            <div class="card stat">
+              <h3 id="avgIpk">—</h3>
+              <p class="muted">Rata-rata IPK</p>
+            </div>
+            <div class="card stat">
+              <h3 id="maxIpk">—</h3>
+              <p class="muted">IPK Tertinggi</p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nama</th>
+                  <th>NIM</th>
+                  <th>Jurusan</th>
+                  <th>IPK</th>
+                  <th>Angkatan</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="mhsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modalBackdrop" class="modal-backdrop" role="dialog">
+      <div class="modal card" id="modalContent">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px">
+          <h3 id="modalTitle" style="font-family: Syne; font-size: 1.2rem; color: #1e1b4b">Form</h3>
+          <button id="closeModal" class="btn" style="padding: 6px 12px">✕</button>
+        </div>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = window.API_URL || '/api';
+      const tokenKey = 'sidata_token';
+      const getToken = () => localStorage.getItem(tokenKey);
+      const setToken = (t) => (t ? localStorage.setItem(tokenKey, t) : localStorage.removeItem(tokenKey));
+      const el = (q) => document.querySelector(q);
+
+      // ── INIT ──
+      window.onload = () => {
+        if (getToken()) showDashboard();
+        else showAuth();
+      };
+
+      function showAuth() {
+        el('#auth-section').style.display = 'flex';
+        el('#dashboard-section').style.display = 'none';
+        el('#user-info').textContent = '';
+      }
+
+      function showDashboard() {
+        el('#auth-section').style.display = 'none';
+        el('#dashboard-section').style.display = 'block';
+        renderDashboard();
+      }
+
+      function showLogin() {
+        el('#login-form').style.display = 'block';
+        el('#register-form').style.display = 'none';
+        el('#auth-alert').className = '';
+        el('#auth-alert').textContent = '';
+      }
+
+      function showRegister() {
+        el('#login-form').style.display = 'none';
+        el('#register-form').style.display = 'block';
+        el('#auth-alert').className = '';
+        el('#auth-alert').textContent = '';
+      }
+
+      function showAlert(msg, type) {
+        const a = el('#auth-alert');
+        a.textContent = msg;
+        a.className = type;
+      }
+
+      // ── AUTH ──
+      async function login() {
+        const username = el('#login-username').value.trim();
+        const password = el('#login-password').value;
+        if (!username || !password) return showAlert('Isi semua field!', 'error');
+        const btn = el('#btn-login');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span>';
+        try {
+          const res = await fetch(API_URL + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+          });
+          const data = await res.json();
+          if (!res.ok) return showAlert(data.message || 'Login gagal', 'error');
+          setToken(data.token);
+          showDashboard();
+        } catch (e) {
+          showAlert('Tidak dapat terhubung ke server!', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML =
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Masuk ke Dashboard';
+        }
+      }
+
+      async function register() {
+        const username = el('#reg-username').value.trim();
+        const password = el('#reg-password').value;
+        if (!username || !password) return showAlert('Isi semua field!', 'error');
+        if (password.length < 6) return showAlert('Password minimal 6 karakter!', 'error');
+        const btn = el('#btn-register');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span>';
+        try {
+          const res = await fetch(API_URL + '/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+          });
+          const data = await res.json();
+          if (!res.ok) return showAlert(data.message || 'Register gagal', 'error');
+          showAlert('Berhasil! Silakan login.', 'success');
+          setTimeout(showLogin, 1200);
+        } catch (e) {
+          showAlert('Tidak dapat terhubung ke server!', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML =
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Buat Akun';
+        }
+      }
+
+      el('#logoutBtn').onclick = () => {
+        setToken(null);
+        showAuth();
+      };
+
+      // Enter key
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        if (el('#login-form').style.display !== 'none') login();
+        else if (el('#register-form').style.display !== 'none') register();
+      });
+
+      // ── DASHBOARD ──
+      async function renderDashboard() {
+        el('#user-info').textContent = 'Signed in';
+        el('#addBtn').onclick = () => openModal('Tambah Mahasiswa', (c) => renderMhsForm(c));
+        el('#searchInput').oninput = () => fetchAndRender(el('#searchInput').value);
+        await fetchAndRender();
+      }
+
+      async function fetchAndRender(q = '') {
+        const t = el('#mhsBody');
+        t.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#94a3b8"><span class="spinner" style="border-top-color:#6366f1;border-color:rgba(99,102,241,0.2);margin:auto;display:block"></span></td></tr>';
+        try {
+          const res = await fetch(API_URL + '/mahasiswa', { headers: { Authorization: 'Bearer ' + getToken() } });
+          if (res.status === 401) {
+            setToken(null);
+            showAuth();
+            return;
+          }
+          let list = await res.json();
+          if (q) list = list.filter((i) => i.nama.toLowerCase().includes(q.toLowerCase()) || i.nim.toLowerCase().includes(q.toLowerCase()));
+          updateStats(list);
+          if (!list.length) {
+            t.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:60px;color:#94a3b8;font-size:0.9rem">Belum ada data. Klik <strong style="color:#6366f1">Tambah Mahasiswa</strong> untuk mulai.</td></tr>';
+            return;
+          }
+          t.innerHTML = list
+            .map(
+              (i, idx) => `<tr>
+            <td style="color:#94a3b8;font-size:0.8rem;font-family:monospace">${String(idx + 1).padStart(2, '0')}</td>
+            <td style="font-weight:600;color:#1e1b4b">${i.nama}</td>
+            <td><span class="badge">${i.nim}</span></td>
+            <td style="color:#64748b">${i.jurusan}</td>
+            <td>${renderIpkBadge(i.ipk)}</td>
+            <td style="font-weight:600;color:#6366f1">${i.angkatan}</td>
+            <td>
+              <button class="btn" style="font-size:0.78rem;padding:6px 12px;background:rgba(99,102,241,0.08);color:#6366f1;border-color:rgba(99,102,241,0.2)" data-id="${i._id}" data-act="edit">Edit</button>
+              <button class="btn" style="font-size:0.78rem;padding:6px 12px;background:rgba(248,113,113,0.08);color:#ef4444;border-color:rgba(248,113,113,0.2);margin-left:6px" data-id="${i._id}" data-act="del">Hapus</button>
+            </td>
+          </tr>`,
+            )
+            .join('');
+          t.querySelectorAll('button[data-act]').forEach((b) => {
+            b.onclick = () => {
+              const id = b.dataset.id,
+                act = b.dataset.act;
+              if (act === 'edit') openModal('Edit Mahasiswa', (c) => renderMhsForm(c, id));
+              if (act === 'del') confirmDelete(id);
+            };
+          });
+        } catch (e) {
+          t.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#ef4444;padding:30px">Gagal memuat data dari server</td></tr>';
+        }
+      }
+
+      function renderIpkBadge(ipk) {
+        const cls = ipk >= 3.5 ? 'green' : ipk >= 2.75 ? 'yellow' : 'red';
+        return `<span class="badge ipk ${cls}">${parseFloat(ipk).toFixed(2)}</span>`;
+      }
+
+      function updateStats(list) {
+        el('#totalCount').textContent = list.length || '—';
+        if (!list.length) {
+          el('#avgIpk').textContent = '—';
+          el('#maxIpk').textContent = '—';
+          return;
+        }
+        el('#avgIpk').textContent = (list.reduce((s, x) => s + x.ipk, 0) / list.length).toFixed(2);
+        el('#maxIpk').textContent = Math.max(...list.map((x) => x.ipk)).toFixed(2);
+      }
+
+      // ── MODAL ──
+      function openModal(title, renderer) {
+        el('#modalTitle').textContent = title;
+        el('#modalBackdrop').classList.add('show');
+        el('#modalBody').innerHTML = '<p style="color:#94a3b8">Loading...</p>';
+        el('#closeModal').onclick = closeModal;
+        el('#modalBackdrop').onclick = (e) => {
+          if (e.target.id === 'modalBackdrop') closeModal();
+        };
+        renderer(el('#modalBody'));
+      }
+      function closeModal() {
+        el('#modalBackdrop').classList.remove('show');
+      }
+
+      function renderMhsForm(container, id) {
+        (async () => {
+          let data = { nama: '', nim: '', jurusan: '', ipk: 3.0, angkatan: new Date().getFullYear() };
+          if (id) {
+            const res = await fetch(API_URL + '/mahasiswa/' + id, { headers: { Authorization: 'Bearer ' + getToken() } });
+            if (res.status === 401) {
+              setToken(null);
+              showAuth();
+              return;
+            }
+            data = await res.json();
+          }
+          container.innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div class="field"><label>Nama Lengkap</label><input id="f_nama" value="${esc(data.nama)}" placeholder="Contoh: Budi Santoso"></div>
+              <div class="form-row">
+                <div class="field"><label>NIM</label><input id="f_nim" value="${esc(data.nim)}" placeholder="2021001"></div>
+                <div class="field"><label>Angkatan</label><input id="f_angkatan" type="number" value="${data.angkatan || ''}" placeholder="2021"></div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label>Jurusan</label><input id="f_jurusan" value="${esc(data.jurusan)}" placeholder="Informatika"></div>
+                <div class="field"><label>IPK</label><input id="f_ipk" type="number" step="0.01" min="0" max="4" value="${data.ipk || ''}" placeholder="3.50"></div>
+              </div>
+              <p id="formMsg" style="color:#ef4444;font-size:0.85rem;min-height:18px"></p>
+              <div style="display:flex;gap:10px;justify-content:flex-end">
+                <button onclick="closeModal()" class="btn">Batal</button>
+                <button id="saveMhs" class="btn primary">Simpan Data</button>
+              </div>
+            </div>`;
+          el('#saveMhs').onclick = async () => {
+            const payload = {
+              nama: el('#f_nama').value.trim(),
+              nim: el('#f_nim').value.trim(),
+              jurusan: el('#f_jurusan').value.trim(),
+              ipk: parseFloat(el('#f_ipk').value),
+              angkatan: parseInt(el('#f_angkatan').value),
+            };
+            const msg = el('#formMsg');
+            if (!payload.nama || !payload.nim || !payload.jurusan || isNaN(payload.ipk) || isNaN(payload.angkatan)) return (msg.textContent = 'Semua field wajib diisi!');
+            if (payload.ipk < 0 || payload.ipk > 4) return (msg.textContent = 'IPK harus antara 0 dan 4!');
+            el('#saveMhs').disabled = true;
+            try {
+              const url = id ? API_URL + '/mahasiswa/' + id : API_URL + '/mahasiswa';
+              const res = await fetch(url, {
+                method: id ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+                body: JSON.stringify(payload),
+              });
+              const d = await res.json();
+              if (!res.ok) return (msg.textContent = d.message || 'Gagal menyimpan');
+              closeModal();
+              fetchAndRender(el('#searchInput').value);
+            } catch (e) {
+              msg.textContent = 'Network error';
+            } finally {
+              el('#saveMhs').disabled = false;
+            }
+          };
+        })();
+      }
+
+      async function confirmDelete(id) {
+        if (!confirm('Yakin ingin menghapus data ini?')) return;
+        try {
+          const res = await fetch(API_URL + '/mahasiswa/' + id, { method: 'DELETE', headers: { Authorization: 'Bearer ' + getToken() } });
+          if (res.status === 401) {
+            setToken(null);
+            showAuth();
+            return;
+          }
+          fetchAndRender(el('#searchInput').value);
+        } catch (e) {
+          alert('Gagal menghapus!');
+        }
+      }
+
+      function esc(s) {
+        return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+    </script>
+  </body>
+</html>
