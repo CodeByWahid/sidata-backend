@@ -789,6 +789,10 @@
     </div>
 
     <script>
+      window.API_URL = 'https://sidata-backend-production.up.railway.app/api';
+    </script>
+
+    <script>
       const API_URL = window.API_URL || '/api';
       const tokenKey = 'sidata_token';
       const getToken = () => localStorage.getItem(tokenKey);
